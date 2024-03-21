@@ -26,6 +26,9 @@ async function run() {
         const collection = db.collection('users');
         const supplies = db.collection('supplies');
         const donations = db.collection('donations');
+        const opinions = db.collection('opinions');
+        const testimonials = db.collection('testimonials');
+        const volunteers = db.collection('volunteer');
 
         // User Registration
         app.post('/api/v1/register', async (req, res) => {
@@ -184,6 +187,100 @@ async function run() {
                 message: 'Donate successfully'
             })
         })
+
+        // Get all donors
+        app.get('/api/v1/leaderboard', async(req, res) => {
+            const result = await donations.find().toArray()
+
+            res.status(200).json({
+                success: true,
+                message: 'Donations retrieved successfully',
+                donations: result
+            })
+        })
+
+
+        // Post comments
+        app.post('/api/v1/add-opinion', async(req, res) => {
+            await opinions.insertOne(req.body)
+
+            res.status(200).json({
+                success: true,
+                message: 'Opinion published successfully',
+            })
+        })
+
+        // Get comments
+        app.get('/api/v1/opinions', async(req, res) => {
+           const result = await opinions.find().toArray()
+
+            res.status(200).json({
+                success: true,
+                message: 'Opinion published successfully',
+                opinions: result
+            })
+        })
+
+        // Adding comment to the opinion
+        app.put('/api/v1/add-comment/:id', async(req, res) => {
+            const id = req.body.id
+            const updatedData = req.body
+
+            const result = await opinions.updateOne(
+                { _id: new ObjectId(id) },
+                { $set: updatedData }
+            );
+
+            if (result.modifiedCount === 0) {
+                return res.status(404).json({ message: 'Data not found or no changes applied' });
+            }
+    
+            res.status(200).json({
+                success: true,
+                message: 'Comment added successfully',
+                data: result
+            })
+        })
+
+        // Post Testimonial
+        app.post('/api/v1/add-testimonial', async(req, res) => {
+            await opinions.testimonials(req.body)
+
+            res.status(200).json({
+                success: true,
+                message: 'Testimonial added successfully',
+            })
+        })
+        // Get Testimonials
+        app.get('/api/v1/testimonials', async(req, res) => {
+            await opinions.find().toArray()
+
+            res.status(200).json({
+                success: true,
+                message: 'Testimonial retrieved successfully',
+            })
+        })
+
+        // Register as volunteer
+        app.post('/api/v1/add-volunteer', async(req, res) => {
+            await opinions.volunteers(req.body)
+
+            res.status(200).json({
+                success: true,
+                message: 'Volunteer added successfully',
+            })
+        })
+        // Get Testimonials
+        app.get('/api/v1/volunteers', async(req, res) => {
+            await volunteers.find().toArray()
+
+            res.status(200).json({
+                success: true,
+                message: 'Volunteers retrieved successfully',
+            })
+        })
+
+     
         // ==============================================================
 
 
