@@ -226,6 +226,8 @@ async function run() {
             const id = req.body.id
             const updatedData = req.body
 
+            console.log(req.body, 'req')
+
             const result = await opinions.updateOne(
                 { _id: new ObjectId(id) },
                 { $set: updatedData }
@@ -244,7 +246,7 @@ async function run() {
 
         // Post Testimonial
         app.post('/api/v1/add-testimonial', async(req, res) => {
-            await opinions.testimonials(req.body)
+            await testimonials.insertOne(req.body)
 
             res.status(200).json({
                 success: true,
@@ -253,17 +255,18 @@ async function run() {
         })
         // Get Testimonials
         app.get('/api/v1/testimonials', async(req, res) => {
-            await opinions.find().toArray()
+            const result = await testimonials.find().toArray()
 
             res.status(200).json({
                 success: true,
                 message: 'Testimonial retrieved successfully',
+                testimonials: result
             })
         })
 
         // Register as volunteer
         app.post('/api/v1/add-volunteer', async(req, res) => {
-            await opinions.volunteers(req.body)
+            await volunteers.insertOne(req.body)
 
             res.status(200).json({
                 success: true,
