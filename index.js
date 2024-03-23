@@ -28,7 +28,7 @@ async function run() {
         const donations = db.collection('donations');
         const opinions = db.collection('opinions');
         const testimonials = db.collection('testimonials');
-        const volunteers = db.collection('volunteer');
+        const volunteers = db.collection('volunteers');
 
         // User Registration
         app.post('/api/v1/register', async (req, res) => {
