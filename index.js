@@ -26,7 +26,7 @@ async function run() {
         const collection = db.collection('users');
         const supplies = db.collection('supplies');
         const donations = db.collection('donations');
-        const opinions = db.collection('opinions');
+        const comments = db.collection('comments');
         const testimonials = db.collection('testimonials');
         const volunteers = db.collection('volunteers');
 
@@ -201,46 +201,23 @@ async function run() {
 
 
         // Post comments
-        app.post('/api/v1/add-opinion', async(req, res) => {
-            await opinions.insertOne(req.body)
+        app.post('/api/v1/add-comment', async(req, res) => {
+            await comments.insertOne(req.body)
 
             res.status(200).json({
                 success: true,
-                message: 'Opinion published successfully',
+                message: 'Comment published successfully',
             })
         })
 
         // Get comments
-        app.get('/api/v1/opinions', async(req, res) => {
-           const result = await opinions.find().toArray()
+        app.get('/api/v1/comments', async(req, res) => {
+           const result = await comments.find().toArray()
 
             res.status(200).json({
                 success: true,
-                message: 'Opinion published successfully',
-                opinions: result
-            })
-        })
-
-        // Adding comment to the opinion
-        app.put('/api/v1/add-comment/:id', async(req, res) => {
-            const id = req.body.id
-            const updatedData = req.body
-
-            console.log(req.body, 'req')
-
-            const result = await opinions.updateOne(
-                { _id: new ObjectId(id) },
-                { $set: updatedData }
-            );
-
-            if (result.modifiedCount === 0) {
-                return res.status(404).json({ message: 'Data not found or no changes applied' });
-            }
-    
-            res.status(200).json({
-                success: true,
-                message: 'Comment added successfully',
-                data: result
+                message: 'Comments retrieved successfully',
+                comments: result
             })
         })
 
@@ -273,19 +250,20 @@ async function run() {
                 message: 'Volunteer added successfully',
             })
         })
-        // Get Testimonials
+        // Get volunteers
         app.get('/api/v1/volunteers', async(req, res) => {
-            await volunteers.find().toArray()
+            const result = await volunteers.find().toArray()
 
             res.status(200).json({
                 success: true,
                 message: 'Volunteers retrieved successfully',
+                volunteers: result
             })
         })
 
      
         // ==============================================================
-
+        
 
         // Start the server
         app.listen(port, () => {
